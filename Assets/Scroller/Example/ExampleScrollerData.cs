@@ -1,3 +1,8 @@
+//  
+// Copyright (c) 2019 Shane Harper
+// Licensed under the MIT. See LICENSE file full license information.  
+//  
+
 using Sharper.Scroller;
 using UnityEngine;
 

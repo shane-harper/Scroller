@@ -1,4 +1,9 @@
-﻿using System;
+﻿//  
+// Copyright (c) 2019 Shane Harper
+// Licensed under the MIT. See LICENSE file full license information.  
+//  
+
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
