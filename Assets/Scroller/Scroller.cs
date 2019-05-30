@@ -63,7 +63,7 @@ namespace Sharper.Scroller
         {
             // Clean up existing active assets (if applicable)
             if (_activeAssets != null)
-                ReturnAllAssetsToPool();
+                ReturnAllAssetsToPool(false);
             else
                 _activeAssets = new Dictionary<int, TAsset>(4);
 
@@ -175,10 +175,10 @@ namespace Sharper.Scroller
         ///     Refreshes cached values and returns all existing assets to the pool before redrawing
         /// </summary>
         /// <remarks>This method is expensive, avoid using unless necessary</remarks>
-        public void HardRedraw()
+        public void HardRedraw(bool destroyPool)
         {
             RefreshCachedValues();
-            ReturnAllAssetsToPool();
+            ReturnAllAssetsToPool(destroyPool);
             Redraw();
         }
         
@@ -203,13 +203,20 @@ namespace Sharper.Scroller
             _loopPadding = Mathf.CeilToInt(scrollSize / _spacing * 0.5f);
         }
         
-        private void ReturnAllAssetsToPool()
+        private void ReturnAllAssetsToPool(bool destroy)
         {
             foreach (var asset in _activeAssets.Values)
             {
                 if (asset == null) continue;
-                if (_setInactiveInPool) asset.gameObject.SetActive(false);
-                _pool.Return(asset);
+                if (destroy)
+                {
+                    Destroy(asset);
+                }
+                else
+                {
+                    if (_setInactiveInPool) asset.gameObject.SetActive(false);
+                    _pool.Return(asset);
+                }
             }
             _activeAssets.Clear();
         }
@@ -441,7 +448,7 @@ namespace Sharper.Scroller
 
             // Redraw changes if playing and initialized
             if (!Application.isPlaying || !IsInitialized) return;
-            HardRedraw();
+            HardRedraw(false);
         }
 
         private void OnDrawGizmosSelected()
