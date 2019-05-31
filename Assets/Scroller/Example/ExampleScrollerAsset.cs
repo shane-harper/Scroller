@@ -41,7 +41,7 @@ public class ExampleScrollerAsset : MonoBehaviour, IScrollerPrefab<ExampleScroll
 
     public void OnPointerClick(PointerEventData eventData)
     {
-        ClickHandler?.Invoke(_index);
+        if (ClickHandler != null) ClickHandler.Invoke(_index);
     }
     
     #endregion

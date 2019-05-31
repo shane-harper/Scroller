@@ -129,17 +129,19 @@ namespace Sharper.Scroller
                 var scale = _zoomCurve.Evaluate(1f - Vector2.Distance(_itemOffset, position) / _zoomArea);
                 var isVisible = IsVisible(position, scale);
 
-                var offset = _prefabSize * (scale-1) * _zoomOffset;
+                var offset = Vector2.Scale(_prefabSize * (scale-1), _zoomOffset);
                 position += offset;
-                
-                var assetExists = _activeAssets.TryGetValue(i, out var asset);
+
+                TAsset asset;
+                var assetExists = _activeAssets.TryGetValue(i, out asset);
 
                 if (isVisible)
                 {
                     var isNew = false;
                     if (!assetExists)
                     {
-                        asset = _pool.Get(out var instantiated);
+                        bool instantiated;
+                        asset = _pool.Get(out instantiated);
                         if (instantiated) OnNewAssetCreated(asset);
                         
                         asset.gameObject.SetActive(true);
@@ -333,8 +335,9 @@ namespace Sharper.Scroller
         {
             if (!IsDragging || !enabled || eventData.button != PointerEventData.InputButton.Left) return;
 
+            Vector2 cursorPosition;
             RectTransformUtility.ScreenPointToLocalPointInRectangle(_viewport, eventData.position,
-                eventData.pressEventCamera, out var cursorPosition);
+                eventData.pressEventCamera, out cursorPosition);
 
             var offset = _scrollAxis == RectTransform.Axis.Vertical
                 ? _dragCursorStart.y - cursorPosition.y
